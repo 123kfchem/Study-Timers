@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Timer | PWA</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⏱️</text></svg>">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1 id="appTitle"><i class="fas fa-tasks"></i> Task Timer</h1>
+            <p class="subtitle">A progressive web app for managing tasks with timers</p>
+            <div class="developer-indicator" id="devIndicator">
+                <i class="fas fa-code"></i> Developer Mode Active
+            </div>
+        </header>
+
+        <!-- Developer Access Button -->
+        <button class="install-btn dev-btn" id="devAccessBtn" style="display: none;">
+            <i class="fas fa-code"></i> Developer Dashboard
+        </button>
+
+        <div class="app-controls">
+            <button class="install-btn" id="installButton">
+                <i class="fas fa-download"></i> Install App
+            </button>
+            
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-value" id="totalTasks">0</div>
+                    <div class="stat-label">Total Tasks</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="activeTimers">0</div>
+                    <div class="stat-label">Active Timers</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="completedTasks">0</div>
+                    <div class="stat-label">Completed</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Developer Dashboard (Hidden by Default) -->
+        <div class="developer-dashboard" id="devDashboard">
+            <div class="dev-header">
+                <h2 class="dev-title"><i class="fas fa-terminal"></i> Developer Dashboard</h2>
+                <button class="timer-btn delete-btn" id="closeDevDashboard">
+                    <i class="fas fa-times"></i> Close
+                </button>
+            </div>
+            
+            <div class="dev-section">
+                <h3><i class="fas fa-book"></i> Subject Units Manager</h3>
+                <p>Manage units for all subjects available in the app.</p>
+                
+                <!-- Subject Tabs -->
+                <div class="subject-tabs" id="subjectTabs">
+                    <!-- Tabs will be populated by JavaScript -->
+                </div>
+                
+                <!-- Current Subject Info -->
+                <div id="currentSubjectInfo">
+                    <h4 id="currentSubjectTitle">Select a subject above</h4>
+                    <p id="currentSubjectDescription">Choose a subject tab to manage its units</p>
+                </div>
+                
+                <!-- Units List for Selected Subject -->
+                <div class="unit-manager" id="unitManagerList">
+                    <!-- Units will be populated here -->
+                </div>
+                
+                <!-- Add Unit Form -->
+                <div class="add-unit-form">
+                    <input type="text" id="newUnitCode" placeholder="Unit Code (e.g., CSC101)">
+                    <input type="text" id="newUnitName" placeholder="Unit Name">
+                    <button class="add-unit-btn" id="addUnitBtn">
+                        <i class="fas fa-plus"></i> Add Unit to <span id="currentSubjectName">Subject</span>
+                    </button>
+                </div>
+                
+                <button class="reset-units-btn" id="resetUnitsBtn">
+                    <i class="fas fa-undo"></i> Reset Current Subject to Default
+                </button>
+                
+                <button class="reset-units-btn" id="resetAllSubjectsBtn" style="background: var(--danger-color); margin-left: 10px;">
+                    <i class="fas fa-bomb"></i> Reset ALL Subjects
+                </button>
+            </div>
+            
+            <div class="dev-section">
+                <h3><i class="fas fa-plus-circle"></i> Add New Subject</h3>
+                <p>Create a new subject category for the app.</p>
+                
+                <div class="add-unit-form">
+                    <input type="text" id="newSubjectId" placeholder="Subject ID (e.g., engineering)">
+                    <input type="text" id="newSubjectName" placeholder="Subject Name (e.g., Engineering)">
+                    <input type="color" id="newSubjectColor" value="#7209b7" title="Choose color for this subject">
+                    <button class="add-unit-btn" id="addSubjectBtn">
+                        <i class="fas fa-plus"></i> Add New Subject
+                    </button>
+                </div>
+            </div>
+            
+            <div class="dev-section">
+                <h3><i class="fas fa-volume-up"></i> Audio Settings</h3>
+                <div class="audio-settings">
+                    <p>Configure timer completion alerts:</p>
+                    <label>
+                        <input type="checkbox" id="enableAudio" checked> Enable audio alerts
+                    </label>
+                    <label>
+                        <input type="checkbox" id="enableVoice" checked> Enable voice announcement
+                    </label>
+                    <button class="audio-test-btn" id="testAudioBtn">
+                        <i class="fas fa-play-circle"></i> Test Audio Alert
+                    </button>
+                </div>
+            </div>
+            
+            <div class="dev-section">
+                <h3><i class="fas fa-tools"></i> Developer Actions</h3>
+                <div class="dev-actions">
+                    <button class="dev-action-btn" id="clearAllTasksBtn">
+                        <i class="fas fa-trash-alt"></i> Clear All Tasks
+                    </button>
+                    <button class="dev-action-btn" id="exportDataBtn">
+                        <i class="fas fa-file-export"></i> Export Data
+                    </button>
+                    <button class="dev-action-btn" id="importDataBtn">
+                        <i class="fas fa-file-import"></i> Import Data
+                    </button>
+                    <button class="dev-action-btn" id="resetAppBtn">
+                        <i class="fas fa-redo"></i> Reset App
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="add-task-form">
+            <h2>Add New Task</h2>
+            <div class="form-group">
+                <label for="taskTitle">Task Name</label>
+                <input type="text" id="taskTitle" placeholder="Enter task name...">
+            </div>
+            
+            <div class="form-group">
+                <label for="taskCategory">Category</label>
+                <select id="taskCategory">
+                    <option value="work">Work</option>
+                    <option value="personal">Personal</option>
+                    <option value="health">Health</option>
+                    <option value="learning">Learning</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            
+            <!-- Subject Selection (Visible when Learning is selected) -->
+            <div class="subject-selection" id="subjectSelection" style="display: none;">
+                <h3><i class="fas fa-graduation-cap"></i> Select Learning Subject</h3>
+                <select id="subject">
+                    <option value="">Select a subject...</option>
+                    <!-- Subjects will be populated by JavaScript -->
+                </select>
+                
+                <!-- Units Selection (Visible when a subject is selected) -->
+                <div class="units-selection" id="unitsSelection" style="display: none; margin-top: 15px;">
+                    <h4 id="unitsSelectionTitle"><i class="fas fa-flask"></i> Select Unit</h4>
+                    <div class="units-grid" id="unitsGrid">
+                        <!-- Units will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label>Set Timer</label>
+                <div class="timer-input">
+                    <div style="flex: 1;">
+                        <input type="number" id="hours" min="0" max="24" value="0" placeholder="Hours">
+                    </div>
+                    <div style="flex: 1;">
+                        <input type="number" id="minutes" min="0" max="59" value="30" placeholder="Minutes">
+                    </div>
+                    <div style="flex: 1;">
+                        <input type="number" id="seconds" min="0" max="59" value="0" placeholder="Seconds">
+                    </div>
+                </div>
+            </div>
+            
+            <button class="add-btn" id="addTaskBtn">
+                <i class="fas fa-plus-circle"></i> Add Task
+            </button>
+        </div>
+
+        <!-- Subject Information Panels (Initially hidden) -->
+        <div class="subject-info microbiology" id="microbiologyInfo">
+            <h3><i class="fas fa-microscope"></i> Microbiology Study Units</h3>
+            <p>Here are the recommended units for Microbiology students:</p>
+            <ul class="unit-list" id="microbiologyUnitList">
+                <!-- Units will be populated by JavaScript -->
+            </ul>
+            <p style="margin-top: 10px; font-style: italic;">Select a unit above to track your study time for that specific subject.</p>
+        </div>
+
+        <div class="subject-info computer_science" id="csInfo">
+            <h3><i class="fas fa-laptop-code"></i> Computer Science Study Units</h3>
+            <p>Here are the recommended units for Computer Science students:</p>
+            <ul class="unit-list" id="csUnitList">
+                <!-- Units will be populated by JavaScript -->
+            </ul>
+        </div>
+
+        <div class="subject-info biology" id="biologyInfo">
+            <h3><i class="fas fa-dna"></i> Biology Study Units</h3>
+            <p>Here are the recommended units for Biology students:</p>
+            <ul class="unit-list" id="biologyUnitList">
+                <!-- Units will be populated by JavaScript -->
+            </ul>
+        </div>
+
+        <div class="subject-info chemistry" id="chemistryInfo">
+            <h3><i class="fas fa-flask"></i> Chemistry Study Units</h3>
+            <p>Here are the recommended units for Chemistry students:</p>
+            <ul class="unit-list" id="chemistryUnitList">
+                <!-- Units will be populated by JavaScript -->
+            </ul>
+        </div>
+
+        <div class="subject-info physics" id="physicsInfo">
+            <h3><i class="fas fa-atom"></i> Physics Study Units</h3>
+            <p>Here are the recommended units for Physics students:</p>
+            <ul class="unit-list" id="physicsUnitList">
+                <!-- Units will be populated by JavaScript -->
+            </ul>
+        </div>
+
+        <div class="subject-info mathematics" id="mathInfo">
+            <h3><i class="fas fa-calculator"></i> Mathematics Study Units</h3>
+            <p>Here are the recommended units for Mathematics students:</p>
+            <ul class="unit-list" id="mathUnitList">
+                <!-- Units will be populated by JavaScript -->
+            </ul>
+        </div>
+
+        <div class="tasks-container">
+            <h2 class="section-title">Your Tasks</h2>
+            <div class="task-list" id="taskList">
+                <!-- Tasks will be added here dynamically -->
+                <div class="empty-state" id="emptyState">
+                    <i class="fas fa-clipboard-list"></i>
+                    <h3>No tasks yet</h3>
+                    <p>Add your first task using the form above</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Task Timer PWA &copy; 2023 | This app works offline and can be installed on your device</p>
+        </div>
+    </div>
+
+    <!-- Time's Up Notification -->
+    <div class="time-up-notification" id="timeUpNotification">
+        <div class="notification-title">⏰ Time's Up!</div>
+        <div class="notification-message" id="timeUpMessage">Your timer has completed!</div>
+        <button class="close-notification" id="closeNotificationBtn">OK, I understand</button>
+    </div>
+
+    <!-- Developer Login Modal -->
+    <div class="login-modal" id="loginModal">
+        <div class="login-box">
+            <h2 class="login-title"><i class="fas fa-lock"></i> Developer Access</h2>
+            <div class="form-group login-input">
+                <label for="devPassword">Enter Developer Password</label>
+                <input type="password" id="devPassword" placeholder="Enter password...">
+            </div>
+            <button class="login-btn" id="loginBtn">
+                <i class="fas fa-sign-in-alt"></i> Access Dashboard
+            </button>
+            <div class="login-error" id="loginError">
+                <i class="fas fa-exclamation-circle"></i> Incorrect password. Try again.
+            </div>
+        </div>
+    </div>
+
+    <!-- PWA Installation Banner -->
+    <div class="install-banner" id="installBanner">
+        <div>
+            <strong>Install Task Timer App</strong>
+            <p>Get quick access from your home screen</p>
+        </div>
+        <div>
+            <button class="install-btn" id="bannerInstallBtn">Install</button>
+            <button class="banner-close" id="closeBannerBtn">&times;</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
