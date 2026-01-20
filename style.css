@@ -880,13 +880,41 @@ input:focus, select:focus {
 
 }
 
+.time-box {
+  display: inline-block;
+  padding: 12px 20px;
+  margin: 20px auto;
+  border-radius: 12px;
+  position: relative;
+  background: #0b0b0b;
+}
+
+/* Glowing animated border */
+.time-box::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: 14px;
+  background: linear-gradient(
+    270deg,
+    #00f2ff,
+    #7cff00,
+    #ff00cc,
+    #00f2ff
+  );
+  background-size: 600% 600%;
+  animation: borderGlow 6s ease infinite;
+  z-index: -1;
+  filter: blur(6px);
+}
+
+/* Time text */
 #datetime {
   text-align: center;
   font-size: clamp(13px, 2.5vw, 15px);
   font-weight: 600;
   letter-spacing: 1px;
 
-  /* Animated gradient text */
   background: linear-gradient(
     270deg,
     #00f2ff,
@@ -900,20 +928,23 @@ input:focus, select:focus {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 
-  /* Glow */
   text-shadow:
     0 0 6px rgba(0, 242, 255, 0.8),
     0 0 12px rgba(124, 255, 0, 0.7),
     0 0 24px rgba(255, 0, 204, 0.7);
 
-  padding: 12px 0;
+  margin: 0;
 }
 
-/* Gradient animation */
+/* Animations */
 @keyframes gradientMove {
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
 }
 
-
+@keyframes borderGlow {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
