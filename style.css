@@ -880,8 +880,40 @@ input:focus, select:focus {
 
 }
 
-p#datetime {
+#datetime {
   text-align: center;
-  font-size: 14px;
-  color: #bbb;
+  font-size: clamp(13px, 2.5vw, 15px);
+  font-weight: 600;
+  letter-spacing: 1px;
+
+  /* Animated gradient text */
+  background: linear-gradient(
+    270deg,
+    #00f2ff,
+    #7cff00,
+    #ff00cc,
+    #00f2ff
+  );
+  background-size: 600% 600%;
+  animation: gradientMove 6s ease infinite;
+
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+
+  /* Glow */
+  text-shadow:
+    0 0 6px rgba(0, 242, 255, 0.8),
+    0 0 12px rgba(124, 255, 0, 0.7),
+    0 0 24px rgba(255, 0, 204, 0.7);
+
+  padding: 12px 0;
 }
+
+/* Gradient animation */
+@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+
