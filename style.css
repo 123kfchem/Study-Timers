@@ -877,4 +877,11 @@ input:focus, select:focus {
     cursor: pointer;
     font-weight: 600;
     margin-top: 10px;
+
+}
+
+p#datetime {
+  text-align: center;
+  font-size: 14px;
+  color: #bbb;
 }
